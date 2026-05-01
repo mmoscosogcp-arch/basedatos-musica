@@ -17,7 +17,7 @@ CREATE TABLE canciones (
     cancion_id SERIAL PRIMARY KEY,
     titulo VARCHAR(150) NOT NULL,
     duracion_segundos INTEGER,
-    album_id INTEGER REFERENCE albunes(album_id)
+    album_id INTEGER REFERENCES albunes(album_id)
 );
 
 CREATE TABLE generos (
