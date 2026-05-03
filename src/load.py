@@ -1,5 +1,6 @@
 import pandas as pd
 from transform import parse_artista
+import random
 
 
 def load_generos(cursor, generos: list) -> dict:
@@ -117,4 +118,89 @@ def load_canciones_generos(cursor, df: pd.DataFrame, canciones_dict: dict, gener
             cursor.execute(
                 "INSERT INTO canciones_generos (cancion_id, genero_id) VALUES (%s, %s) ON CONFLICT DO NOTHING", (
                     cancion_id, genero_id)
+            )
+
+
+def load_productores(cursor, productores: list) -> dict:
+    productores_dict = {}
+    for productor in productores:
+        nombre = productor["nombre"]
+        pais = productor["pais"]
+        if nombre:
+            cursor.execute(
+                "INSERT INTO productores (nombre, pais) VALUES (%s, %s) ON CONFLICT DO NOTHING", (
+                    nombre, pais)
+            )
+            cursor.execute(
+                "SELECT productor_id FROM productores WHERE nombre=%s", (
+                    nombre,)
+            )
+            resultado = cursor.fetchone()
+            if resultado:
+                productores_dict[nombre] = resultado[0]
+
+    return productores_dict
+
+
+def load_usuarios(cursor, usuarios: list) -> dict:
+    usuarios_dict = {}
+    for usuario in usuarios:
+        nombre_usuario = usuario["nombreusuario"]
+        email_usuario = usuario["email"]
+        if nombre_usuario:
+            cursor.execute(
+                "INSERT INTO usuarios (nombreusuario, email) VALUES (%s, %s) ON CONFLICT DO NOTHING", (
+                    nombre_usuario, email_usuario)
+            )
+            cursor.execute(
+                "SELECT usuario_id FROM usuarios WHERE nombreusuario=%s", (
+                    nombre_usuario,)
+            )
+            resultado = cursor.fetchone()
+            if resultado:
+                usuarios_dict[nombre_usuario] = resultado[0]
+
+    return usuarios_dict
+
+
+def load_playlists(cursor, playlists: list, usuarios_dict: dict) -> dict:
+    playlists_dict = {}
+    for playlist in playlists:
+        usuario_id = random.choice(list(usuarios_dict.values()))
+        nombreplaylist = playlist["nombre"]
+        if usuario_id:
+            cursor.execute(
+                "INSERT INTO playlists (nombre, usuario_id) VALUES (%s,%s) ON CONFLICT DO NOTHING", (
+                    nombreplaylist, usuario_id)
+            )
+            cursor.execute(
+                "SELECT playlist_id FROM playlists WHERE nombre=%s", (
+                    nombreplaylist,)
+            )
+            resultado = cursor.fetchone()
+            if resultado:
+                playlists_dict[nombreplaylist] = resultado[0]
+
+    return playlists_dict
+
+
+def load_canciones_productores(cursor,  canciones_dict: dict, productores_id: dict):
+    for clave, valor in canciones_dict.items():
+        productor_id = random.choice(list(productores_id.values()))
+        cancion_id = valor
+        if productor_id:
+            cursor.execute(
+                "INSERT INTO canciones_productores (cancion_id, productor_id) VALUES (%s,%s) ON CONFLICT DO NOTHING", (
+                    cancion_id, productor_id)
+            )
+
+
+def load_playlist_canciones(cursor, playlists_dict: dict, canciones_dict: dict):
+    for clave, valor in playlists_dict.items():
+        cancion_id = random.choice(list(canciones_dict.values()))
+        playlist_id = valor
+        if cancion_id:
+            cursor.execute(
+                "INSERT INTO playlist_canciones (playlist_id, cancion_id) VALUES (%s,%s) ON CONFLICT DO NOTHING", (
+                    playlist_id, cancion_id)
             )

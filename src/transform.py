@@ -1,5 +1,8 @@
 import ast
 import pandas as pd
+from faker import Faker
+
+fake = Faker()
 
 
 def get_generos_unicos(df: pd.DataFrame) -> list:
@@ -35,3 +38,26 @@ def parse_artista(valor: str) -> str:
         return lista_artista[0].strip()
     except:
         return valor.split(";")[0].strip()
+
+
+def generar_productores(n: int) -> list:
+    productores = []
+    for _ in range(n):
+        productores.append(
+            {"nombre": fake.unique.name(), "pais": fake.country()})
+    return productores
+
+
+def generar_usuarios(n: int) -> list:
+    usuarios = []
+    for _ in range(n):
+        usuarios.append(
+            {"nombreusuario": fake.unique.user_name(), "email": fake.email()})
+    return usuarios
+
+
+def generar_playlist(n: int) -> list:
+    playlists = []
+    for _ in range(n):
+        playlists.append({"nombre":  fake.catch_phrase()})
+    return playlists
