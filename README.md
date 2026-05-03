@@ -70,10 +70,10 @@ usuarios ──< playlists >── playlist_canciones >── canciones
 
 - [x] Crear tablas en PostgreSQL
 - [x] Cargar géneros, artistas, álbumes, canciones desde CSV
-- [ ] Cargar tabla pivote `canciones_artistas`
-- [ ] Cargar tabla pivote `canciones_generos`
-- [ ] Generar datos ficticios para `productores`, `usuarios`, `playlists` con Faker
-- [ ] Cargar tablas pivote `canciones_productores` y `playlist_canciones`
+- [x] Cargar tabla pivote `canciones_artistas`
+- [x] Cargar tabla pivote `canciones_generos`
+- [x] Generar datos ficticios para `productores`, `usuarios`, `playlists` con Faker
+- [x] Cargar tablas pivote `canciones_productores` y `playlist_canciones`
 
 ### Fase 2 — Transformaciones con dbt
 
