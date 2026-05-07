@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: stg_canciones
+    description: "Limpieza de la tabla cruda canciones. Capa Silver."
+    columns:
+      - name: cancion_id
+        description: "Identificador único de la canción"
+        tests:
+          - unique
+          - not_null
+      - name: titulo
+        description: "Nombre de la canción"
+        tests:
+          - not_null
+      - name: popularidad
+        description: "Popularidad de 0 a 100 según Spotify"
+
+  - name: stg_artistas
+    description: "Limpieza de la tabla cruda artistas. Capa Silver."
+    columns:
+      - name: artista_id
+        tests:
+          - unique
+          - not_null
+      - name: nombre
+        tests:
+          - not_null
+
+  - name: stg_generos
+    description: "Limpieza de la tabla cruda generos. Capa Silver."
+    columns:
+      - name: genero_id
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_albunes
+    description: "Limpieza de la tabla cruda albunes. Capa Silver."
+    columns:
+      - name: album_id
+        tests:
+          - unique
+          - not_null

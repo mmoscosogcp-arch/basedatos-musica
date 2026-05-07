@@ -124,7 +124,7 @@ def load_canciones_generos(cursor, df: pd.DataFrame, canciones_dict: dict, gener
 def load_productores(cursor, productores: list) -> dict:
     productores_dict = {}
     for productor in productores:
-        nombre = productor["nombre"]
+        nombre = productor["nombre"][:5]
         pais = productor["pais"]
         if nombre:
             cursor.execute(
