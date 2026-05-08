@@ -15,6 +15,11 @@ with DAG(
         bash_command="cd /opt/airflow/project && python src/main.py",
     )
 
+    cargar_mongo = BashOperator(
+        task_id="cargar_mongo",
+        bash_command="cd /opt/airflow/project && python src/load_mongo.py",
+    )
+
     dbt_run = BashOperator(
         task_id="dbt_run",
         bash_command="cd /opt/airflow/project/music_dbt && dbt run",
@@ -25,4 +30,4 @@ with DAG(
         bash_command="cd /opt/airflow/project/music_dbt && dbt test",
     )
 
-    cargar_datos >> dbt_run >> dbt_test
+    cargar_datos >> cargar_mongo >> dbt_run >> dbt_test

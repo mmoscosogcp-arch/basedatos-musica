@@ -44,6 +44,7 @@ basedatos-musica/
 │   ├── db.py
 │   ├── extract.py
 │   ├── load.py
+│   ├── load_mongo.py                # Carga historial de reproducciones en MongoDB
 │   ├── main.py
 │   └── transform.py
 ├── sql/
@@ -60,12 +61,12 @@ basedatos-musica/
 │   │   └── marts/                   # Capa Gold: modelos analíticos
 │   └── dbt_project.yml
 ├── dags/
-│   └── pipeline_musica.py           # DAG: cargar_datos → dbt_run → dbt_test
+│   └── pipeline_musica.py           # DAG: cargar_datos → cargar_mongo → dbt_run → dbt_test
 ├── Dockerfile.airflow               # Imagen personalizada con todas las dependencias
 ├── dbt_profiles.yml                 # Configuración de conexión dbt para Docker
 ├── tests/
 ├── logs/
-├── docker-compose.yml               # PostgreSQL + Airflow (webserver + scheduler)
+├── docker-compose.yml               # PostgreSQL + MongoDB + Airflow
 ├── requirements.txt
 ├── .env.example
 └── .env                             # No se sube a GitHub
@@ -116,11 +117,12 @@ usuarios ──< playlists >── playlist_canciones >── canciones
 - [x] Pipeline corrió exitosamente: ETL ✓ — dbt run (7 modelos) ✓ — dbt test (10/10) ✓
 - [x] Schedule `@daily` configurado — corre automáticamente cada día
 
-### Fase 4 — Calidad de datos
+### Fase 4 — MongoDB (historial de reproducciones)
 
-- [ ] Agregar validaciones con Great Expectations
-- [ ] Validar nulos, duplicados y rangos en columnas críticas
-- [ ] Generar reporte de calidad automático en cada ejecución
+- [x] Agregar MongoDB al docker-compose.yml
+- [x] Crear `load_mongo.py` — genera 5000 eventos de reproducción con Faker
+- [x] Integrar `cargar_mongo` al DAG de Airflow
+- [x] Pipeline completo: cargar_datos → cargar_mongo → dbt_run → dbt_test ✓
 
 ### Fase 5 — Visualización con Metabase
 

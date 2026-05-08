@@ -7,7 +7,8 @@ RUN pip install --no-cache-dir \
     psycopg2-binary \
     pandas \
     python-dotenv \
-    dbt-postgres
+    dbt-postgres \
+    pymongo
 
 RUN mkdir -p /home/airflow/.dbt
 COPY dbt_profiles.yml /home/airflow/.dbt/profiles.yml

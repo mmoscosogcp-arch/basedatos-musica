@@ -11,6 +11,14 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  mongodb:
+    image: mongo:7
+    container_name: music_mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
   airflow-db:
     image: postgres:15
     container_name: airflow_postgres
@@ -57,6 +65,7 @@ services:
       DB_NAME: musicdb
       DB_USER: admin
       DB_PASSWORD: admin123
+      MONGO_HOST: music_mongodb
     ports:
       - "8080:8080"
     volumes:
@@ -86,6 +95,7 @@ services:
       DB_NAME: musicdb
       DB_USER: admin
       DB_PASSWORD: admin123
+      MONGO_HOST: music_mongodb
     volumes:
       - ./dags:/opt/airflow/dags
       - ./src:/opt/airflow/project/src
@@ -97,3 +107,4 @@ services:
 volumes:
   postgres_data:
   airflow_db_data:
+  mongodb_data:
