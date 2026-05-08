@@ -126,8 +126,8 @@ usuarios ──< playlists >── playlist_canciones >── canciones
 
 ### Fase 5 — Visualización con Metabase
 
-- [ ] Agregar Metabase al docker-compose.yml
-- [ ] Conectar Metabase a PostgreSQL
+- [x] Agregar Metabase al docker-compose.yml
+- [x] Conectar Metabase a PostgreSQL
 - [ ] Crear dashboards: top canciones, géneros más populares, artistas
 
 ---

@@ -19,6 +19,17 @@ services:
     volumes:
       - mongodb_data:/data/db
 
+  metabase:
+    image: metabase/metabase:latest
+    container_name: music_metabase
+    ports:
+      - "3000:3000"
+    volumes:
+      - metabase_data:/metabase-data
+    depends_on:
+      - postgres
+      - mongodb
+
   airflow-db:
     image: postgres:15
     container_name: airflow_postgres
@@ -108,3 +119,4 @@ volumes:
   postgres_data:
   airflow_db_data:
   mongodb_data:
+  metabase_data:
