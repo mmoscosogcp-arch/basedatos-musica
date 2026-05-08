@@ -130,6 +130,8 @@ usuarios ──< playlists >── playlist_canciones >── canciones
 - [x] Conectar Metabase a PostgreSQL
 - [ ] Crear dashboards: top canciones, géneros más populares, artistas
 
+> Los dashboards de Metabase quedaron pendientes. El proyecto se considera completo en su capa de ingeniería de datos (ETL, transformación, orquestación y almacenamiento híbrido). La visualización es un próximo paso.
+
 ---
 
 ## Cómo levantar el proyecto
