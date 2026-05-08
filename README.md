@@ -59,10 +59,13 @@ basedatos-musica/
 │   │   │   └── stg_generos.sql
 │   │   └── marts/                   # Capa Gold: modelos analíticos
 │   └── dbt_project.yml
-├── dags/                            # (Fase 3 — Airflow)
+├── dags/
+│   └── pipeline_musica.py           # DAG: cargar_datos → dbt_run → dbt_test
+├── Dockerfile.airflow               # Imagen personalizada con todas las dependencias
+├── dbt_profiles.yml                 # Configuración de conexión dbt para Docker
 ├── tests/
 ├── logs/
-├── docker-compose.yml
+├── docker-compose.yml               # PostgreSQL + Airflow (webserver + scheduler)
 ├── requirements.txt
 ├── .env.example
 └── .env                             # No se sube a GitHub
@@ -106,10 +109,12 @@ usuarios ──< playlists >── playlist_canciones >── canciones
 
 ### Fase 3 — Orquestación con Airflow
 
-- [ ] Agregar Airflow al docker-compose.yml
-- [ ] Convertir load_data.py en DAG de Airflow
-- [ ] Crear DAG para ejecutar modelos dbt
-- [ ] Programar ejecución automática del pipeline completo
+- [x] Agregar Airflow al docker-compose.yml (webserver + scheduler + airflow-db)
+- [x] Crear imagen Docker personalizada con dependencias preinstaladas (`Dockerfile.airflow`)
+- [x] Configurar `dbt_profiles.yml` para conexión dentro de la red Docker
+- [x] Crear DAG `pipeline_musica`: `cargar_datos → dbt_run → dbt_test`
+- [x] Pipeline corrió exitosamente: ETL ✓ — dbt run (7 modelos) ✓ — dbt test (10/10) ✓
+- [x] Schedule `@daily` configurado — corre automáticamente cada día
 
 ### Fase 4 — Calidad de datos
 
@@ -131,27 +136,29 @@ usuarios ──< playlists >── playlist_canciones >── canciones
 # 1. Clonar el repo y crear el .env
 cp .env.example .env
 
-# 2. Levantar PostgreSQL
+# 2. Construir imagen y levantar todos los servicios
+docker-compose build
 docker-compose up -d
 
-# 3. Crear las tablas
+# 3. Crear las tablas en PostgreSQL (primera vez)
 psql -h localhost -p 5433 -U admin -d musicdb -f sql/01_create_tables.sql
 psql -h localhost -p 5433 -U admin -d musicdb -f sql/02_create_pivot_tables.sql
 psql -h localhost -p 5433 -U admin -d musicdb -f sql/03_alter_canciones.sql
 psql -h localhost -p 5433 -U admin -d musicdb -f sql/04_add_constraints.sql
 
-# 4. Cargar datos (Bronze layer)
-source venv/bin/activate
-cd src && python main.py
-
-# 5. Correr transformaciones dbt (Silver + Gold layer)
-source venv_dbt/bin/activate
-cd music_dbt
-dbt run
-
-# 6. Validar calidad de datos
-dbt test
+# 4. Triggerear el pipeline completo via API
+curl -X POST "http://localhost:8080/api/v1/dags/pipeline_musica/dagRuns" \
+  -H "Content-Type: application/json" \
+  -u "admin:admin" \
+  -d '{}'
 ```
+
+Airflow UI disponible en `http://localhost:8080` (usuario: `admin`, password: `admin`).
+
+El pipeline corre automáticamente cada día (`@daily`) y ejecuta:
+1. ETL Python — carga datos desde CSV a PostgreSQL (Bronze)
+2. `dbt run` — actualiza modelos staging y marts (Silver + Gold)
+3. `dbt test` — valida calidad de datos (10 tests)
 
 ---
 

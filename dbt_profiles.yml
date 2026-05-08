@@ -1,0 +1,12 @@
+music_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: music_postgres
+      port: 5432
+      user: admin
+      password: admin123
+      dbname: musicdb
+      schema: public
+      threads: 1
